@@ -29,7 +29,7 @@ Components:
 
 			  vlan40:
 			 	name: DMZ
-`				subnet 10.xxx.40.0/24
+				subnet: 10.xxx.40.0/24
 
 		
 			VPN - on pfsense firewall
