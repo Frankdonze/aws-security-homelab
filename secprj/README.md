@@ -17,39 +17,56 @@ Components:
 			VLANS:
 			  vlan10:
 				name: MGMT
-				subnet: 10.10.10.0/24
+				subnet: 10.xxx.10.0/24
 			  
 			  vlan20:
 				name: Servers
-			    	subnet:10.10.20.0/24
+			    	subnet:10.xxx.20.0/24
 
 			  vlan30:
 			    	name: clients
-			    	subnet: 10.10.30.0/24
+			    	subnet: 10.xxx.30.0/24
 
 			  vlan40:
 			 	name: DMZ
-`				subnet 10.10.40.0/24
+`				subnet 10.xxx.40.0/24
 
 		
-			OpenVPN - for remote connection to my lab from my laptop, and eventually from aws to on-prem
-			  subnet: 10.8.0.0/24
+			VPN - on pfsense firewall
+			  Openvpn - for remote connection to my lab from my laptop
+			  	subnet: 10.xxx.0.0/24
+			  IPSEC - site to site vpn from on-prem to aws
+				Phase1 config
+					key exchange version: IKEv2
+					encryption algorith: AES256-GCM(128 bits)
+					Hash Function: SHA512
+					remote gateway: AWS provided public IP address
+					Diffie Hellman: 19
+					My Identifier: Home Public IP address
+					Peer Identifier: AWS provided tunnel IP
+					Auth Method: Mutual PSK
+					
+				Phase2 config - setup for the following(VLAN10, VLAN20, and OPENVPN subnet)
+					remote network: AWS VPC subnet "secprj"
+					protocol: Encapsulating Security Payload(ESP)
+					Encryption Alorithm: AES256-GCM(128 bits)
+					
 			
 	AWS:
 	        Servers:
-			Wazuh VM - 2 vCPUs, 8GB RAM, 8GB disk space
+			Wazuh VM - 2 vCPUs, 4GB RAM, 25GB disk space
 				function - SIEM
-				security groups: SSH access
+				security groups: wazuhdashboardandagentaccess
 		
 		
 		Network:
 			vpc:
 			  name: secprj
-			  subnet: 10.20.0.0/16
+			  subnet: 10.xxx.0.0/16
 
 			subnets:
 			  name: secprj-public-subnet
-			  subnet: 10.20.1.0/24
+			  subnet: 10.xxx.1.0/24
 
 			gateways:
 			  Internet gateway: Secprj-igw attached
@@ -60,14 +77,14 @@ Components:
 			  name: secprjroutetable
 			  	routes:
 				0.0.0.0/0 - route to the internet gateway
-				10.10.10.0/24 - route to virtual gateway or my ipsec vpn tunnel
-				10.20.0.0/16 - route locally in aws enviornment
+				10.xxx.10.0/24 - route to virtual gateway or my ipsec vpn tunnel
+				10.xxx.0.0/16 - route locally in aws enviornment
 			
 			VPN connections:
-			  name: vpn-tunnel-secprj
+			  name: vpn-tunnel-secprj - same config as whats on pfsense
 			  static routes:
-				10.10.10.0/24
-				10.10.20.0/24
-				10.10.30.0/24
-				10.10.40.0/24
+				10.xxx.10.0/24
+				10.xxx.20.0/24
+				10.xxx.30.0/24
+				10.xxx.40.0/24
 				
