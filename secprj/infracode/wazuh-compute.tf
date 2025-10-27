@@ -1,6 +1,3 @@
-provider "aws" {
-	region = "us-east-1"
-}
 
 resource "aws_instance" "wazuhvl" {
 	ami = "ami-0360c520857e3138f"
@@ -26,7 +23,7 @@ resource "aws_instance" "wazuhvl" {
 	key_name = "sshkey"
 	
 	tags = {
-	name = "wazuhvl"
+	Name = "wazuhvl"
 
 
 
